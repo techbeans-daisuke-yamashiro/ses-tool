@@ -1,2 +1,2 @@
- aws-sam-cli
- aws-sam-cli-local
+aws-sam-cli
+aws-sam-cli-local
