@@ -3,3 +3,7 @@ data/
 .venv
 .envrc
 
+.env
+
+node_modules
+.serverless
