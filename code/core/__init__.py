@@ -11,30 +11,16 @@ from datetime import datetime, timezone, timedelta
 from distutils.util import strtobool
 import urllib.parse
 
-app_name = environ.get('APP_NAME', default='')
-aws_access_key_id = environ.get('ACCESS_KEY_ID', default='')
-aws_secret_access_key = environ.get('SECRET_ACCESS_KEY', default='')
-aws_region = environ.get('AWS_REGION', default='ap-northeast-1')
-dynamo = boto3.client('dynamodb', region_name=aws_region)
-s3 = boto3.client('s3', region_name=aws_region)
-"""s3 = boto3.client('s3', region_name=aws_region,
-                  aws_access_key_id=aws_access_key_id,
-                  aws_secret_access_key=aws_secret_access_key)"""
-tables = {
-    "logs": environ.get('DYNAMODB_TABLE_LOGS', 'logs'),
-    "prompts": environ.get('DYNAMODB_TABLE_PROMPTS', 'prompts')
-}
-buckets = {
-    "logs": environ.get('BUCKET_LOGS', 'logs'),
-    "prompts": environ.get('BUCKET_PROMPTS', 'prompts')
-}
-# https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
-max_response_size = 5622338
-
-
 # FastAPI を初期化
 app_env=getenv('APP_ENV','local')
 app=FastAPI(docs_url='/docs' if app_env == 'local' else None)
+
+
+#AWSクライアントを初期化
+
+aws=boto3.Session(
+    profile_name="default") if app_env == 'local' else boto3.Session() 
+
 
 
 def create_response(status_code: int = 200, body: dict = None, headers: dict = None):
@@ -72,10 +58,13 @@ def unix_time_to_jst(unix_time: int = None):
     return t.strftime('%Y/%m/%d %H:%M:%S')
 
 
+# requestからeventを展開
 def extract_event(request: Request):
     if "aws_event" in request.scope:
+        print(f'called via serverless')
         return request.scope["aws.event"]
     else:
+        print(f'called via uvicorn')
         res=dict()
         #body=(request.body())
         #print(f'got body->{body}')
