@@ -19,7 +19,7 @@ app=FastAPI(docs_url='/docs' if app_env == 'local' else None)
 #AWSクライアントを初期化
 
 aws=boto3.Session(
-    profile_name="default") if app_env == 'local' else boto3.Session() 
+    profile_name="hp") if app_env == 'local' else boto3.Session() 
 
 
 
@@ -71,3 +71,16 @@ def extract_event(request: Request):
         res["queryStringParameters"]=dict(request.query_params)
         res["pathParameters"]=dict(request.path_params)
         return res
+    
+def get_supression_list(region):
+    from pprint import pprint
+    ses=aws.client('sesv2', region_name=region)
+    array = []
+
+    suppression_list = ses.list_suppressed_destinations()
+    while "NextToken" in suppression_list:
+        array.extend(suppression_list["SuppressedDestinationSummaries"])
+        suppression_list = ses.list_suppressed_destinations(
+            NextToken=suppression_list["NextToken"]
+        )
+    return array

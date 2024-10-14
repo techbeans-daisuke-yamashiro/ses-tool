@@ -24,6 +24,7 @@ services:
       - ./data/app:/data
       - ./migrations:/scripts
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./docker/app/aws:/root/.aws
     env_file:
       - ./.env
     environment:

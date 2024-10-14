@@ -24,13 +24,13 @@ RUN npm -g install serverless@v3.38 \
 #RUN cd /tmp && npm -g install
 
 #awslocalのセットアップ
-ARG KEY
-ARG SECRET
-ARG ENDPOINT
-RUN aws configure set aws_access_key_id ${KEY}  && \
-aws configure set aws_secret_access_key ${SECRET} && \
-aws configure set endpoint-url ${ENDPOINT} && \
-aws configure set output json
+# ARG KEY
+# ARG SECRET
+# ARG ENDPOINT
+# RUN aws configure set aws_access_key_id ${KEY}  && \
+# aws configure set aws_secret_access_key ${SECRET} && \
+# aws configure set endpoint-url ${ENDPOINT} && \
+# aws configure set output json
 
 
 
