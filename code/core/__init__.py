@@ -73,7 +73,6 @@ def extract_event(request: Request):
         return res
     
 def get_supression_list(region):
-    from pprint import pprint
     ses=aws.client('sesv2', region_name=region)
     array = []
 
@@ -82,5 +81,3 @@ def get_supression_list(region):
         array.extend(suppression_list["SuppressedDestinationSummaries"])
         suppression_list = ses.list_suppressed_destinations(
             NextToken=suppression_list["NextToken"]
-        )
-    return array
